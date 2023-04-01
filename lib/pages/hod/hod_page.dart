@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mtech_stipend/pages/hod/hod_records.dart';
+
 
 class HODPage extends StatefulWidget {
   const HODPage({Key? key}) : super(key: key);
@@ -42,7 +44,8 @@ class _HODPageState extends State<HODPage> {
               ),
               onPressed: () {},
               child: const Padding(
-                padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 10.0, bottom: 10.0),
+                padding: EdgeInsets.only(
+                    left: 16.0, right: 16.0, top: 10.0, bottom: 10.0),
                 child: Text(
                   "Deny",
                   style: TextStyle(color: Colors.white, fontSize: 20.0),
@@ -70,7 +73,7 @@ class _HODPageState extends State<HODPage> {
             textAlign: TextAlign.center,
           ),
         ),
-        drawer: DrawerHOD(textStyle3: textStyle3, textStyle2: textStyle2),
+        drawer: HOD_Drawer(textStyle3: textStyle3, textStyle2: textStyle2),
         body: ListView.builder(
           itemCount: 6,
           itemBuilder: (context, int index) {
@@ -103,7 +106,10 @@ class _HODPageState extends State<HODPage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                              child: Text("ID: 211070082", style: textStyle4,)),
+                              child: Text(
+                                "ID: 211070082",
+                                style: textStyle4,
+                              )),
                           const SizedBox(height: 6.0),
                           Container(
                             padding: const EdgeInsets.all(10.0),
@@ -111,16 +117,10 @@ class _HODPageState extends State<HODPage> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: Text("Guide: Dr. Manasi Kulkarni", style: textStyle4,),
-                          ),
-                          const SizedBox(height:6.0),
-                          Container(
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10.0),
+                            child: Text(
+                              "Guide: Dr. Manasi Kulkarni",
+                              style: textStyle4,
                             ),
-                            child: Text("Year: 2023", style: textStyle4,),
                           ),
                           const SizedBox(height: 6.0),
                           Container(
@@ -129,7 +129,10 @@ class _HODPageState extends State<HODPage> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: Text("Admission year: 2022", style: textStyle4,),
+                            child: Text(
+                              "Year: 2023",
+                              style: textStyle4,
+                            ),
                           ),
                           const SizedBox(height: 6.0),
                           Container(
@@ -138,7 +141,22 @@ class _HODPageState extends State<HODPage> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: Text("GPA: 9.23", style: textStyle4,),
+                            child: Text(
+                              "Admission year: 2022",
+                              style: textStyle4,
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          Container(
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Text(
+                              "GPA: 9.23",
+                              style: textStyle4,
+                            ),
                           ),
                         ],
                       ),
@@ -160,10 +178,10 @@ class _HODPageState extends State<HODPage> {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0)),
                               child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-
+                                padding: const EdgeInsets.all(16.0),
                                 child: SizedBox(
-                                  width: MediaQuery.of(context).size.width/4.9,
+                                  width:
+                                      MediaQuery.of(context).size.width / 4.9,
                                   child: Text(
                                     "Deny",
                                     style: textStyle1,
@@ -186,7 +204,8 @@ class _HODPageState extends State<HODPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: SizedBox(
-                                  width: MediaQuery.of(context).size.width/4.9,
+                                  width:
+                                      MediaQuery.of(context).size.width / 4.9,
                                   child: Text(
                                     "Approve",
                                     style: textStyle1,
@@ -211,8 +230,10 @@ class _HODPageState extends State<HODPage> {
   }
 }
 
-class DrawerHOD extends StatelessWidget {
-  const DrawerHOD({
+
+
+class HOD_Drawer extends StatelessWidget {
+  const HOD_Drawer({
     Key? key,
     required this.textStyle3,
     required this.textStyle2,
@@ -230,11 +251,35 @@ class DrawerHOD extends StatelessWidget {
         padding: const EdgeInsets.all(0.0),
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue[200]),
-            child: Text(
-              "HOD Name",
-              style: textStyle3,
+            padding: EdgeInsets.zero,
+            child: UserAccountsDrawerHeader(
+              margin: EdgeInsets.zero,
+              accountName: Text("Nikhil Soni", style: textStyle3),
+              accountEmail: Text(
+                "nikhilsoni2910@gamil.com",
+                style: TextStyle(fontSize: 15),
+              ),
+              // currentAccountPicture: CircleAvatar(
+              //   backgroundImage: AssetImage(imageloc),
+              // ),
             ),
+          ),
+          ListTile(
+            leading: const Icon(
+              CupertinoIcons.profile_circled,
+              size: 38.0,
+            ),
+            title: Text(
+              "Profile",
+              style: textStyle2,
+            ),
+            onTap: () {
+              // Navigator.push(
+              //     context,
+
+              //     /// Add Karo Idhar
+              //     MaterialPageRoute(builder: (context) => const HODRecords()));
+            },
           ),
           ListTile(
             leading: const Icon(
