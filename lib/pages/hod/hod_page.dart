@@ -257,7 +257,7 @@ class HOD_Drawer extends StatelessWidget {
               accountName: Text("Nikhil Soni", style: textStyle3),
               accountEmail: Text(
                 "nikhilsoni2910@gamil.com",
-                style: TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 15),
               ),
               // currentAccountPicture: CircleAvatar(
               //   backgroundImage: AssetImage(imageloc),
