@@ -1,1 +1,1 @@
-# mtech-stipend
+# M. Tech-Stipend app made using Flutter
