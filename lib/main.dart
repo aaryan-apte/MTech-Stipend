@@ -9,8 +9,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(StipendApp());
-
 }
+
 class StipendApp extends StatelessWidget {
   const StipendApp({Key? key}) : super(key: key);
 
