@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class HODRecords extends StatefulWidget {
-  const HODRecords({Key? key}) : super(key: key);
+class SupervisorRecords extends StatefulWidget {
+  const SupervisorRecords({Key? key}) : super(key: key);
 
   @override
-  State<HODRecords> createState() => _HODRecordsState();
+  State<SupervisorRecords> createState() => _SupervisorRecordsState();
 }
 
-class _HODRecordsState extends State<HODRecords> {
+class _SupervisorRecordsState extends State<SupervisorRecords> {
   TextStyle textStyle1 = const TextStyle(color: Colors.black, fontSize: 17.0);
 
   @override

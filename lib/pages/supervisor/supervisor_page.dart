@@ -4,15 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:mtech_stipend/pages/hod/hod_records.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class HODPage extends StatefulWidget {
-  const HODPage({Key? key}) : super(key: key);
+class SupervisorPage extends StatefulWidget {
+  const SupervisorPage({Key? key}) : super(key: key);
 
   @override
-  State<HODPage> createState() => _HODPageState();
+  State<SupervisorPage> createState() => _SupervisorPageState();
 }
 
-class _HODPageState extends State<HODPage> {
+class _SupervisorPageState extends State<SupervisorPage> {
   TextEditingController reasonController = TextEditingController();
+
+  void sendData() {
+    final pathSupervisor = FirebaseFirestore.instance
+        .collection("branch")
+        .doc(getBranch())
+        .collection("supervisor")
+        .doc(DateTime.now().month.toString())
+        .collection('applications');
+
+
+  }
 
   void alertDialog() {
     showDialog(
@@ -58,6 +69,7 @@ class _HODPageState extends State<HODPage> {
       ),
     );
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -109,7 +121,7 @@ class _HODPageState extends State<HODPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
-            "HOD - Stipend Applications",
+            "Supervisor - Stipend Applications",
             textAlign: TextAlign.center,
           ),
         ),
@@ -118,29 +130,46 @@ class _HODPageState extends State<HODPage> {
           stream: FirebaseFirestore.instance
               .collection("branch")
               .doc(getBranch())
-              .collection('hod')
+              .collection('supervisor')
+              .doc("applications")
+              .collection(DateTime.now().month.toString())
               .snapshots(),
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            if (!snapshot.hasData) {
+              return Text("Empty");
+            }
             if (snapshot.hasData) {
-              //num tax = 0;
               print("Total objects: ${snapshot.data!.docs.length}");
               return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
-                itemBuilder: (context, int index){
-                  Map<String, dynamic> docData = snapshot.data!.docs[index].data();
-
-                  num ID = docData["ID"];
-                  num Year = docData["Year"];
-                  num GPA = docData["GPA"];
-                  String Name = docData["Name"];
-                  String Guide = docData["Guide"];
-                  return columnHOD(guide: Guide, name: Name, id: ID, gpa: GPA, year: Year);
+                itemBuilder: (context, int index) {
+                  Map<String, dynamic> docData =
+                      snapshot.data!.docs[index].data();
+                  if (docData.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "Document is Empty",
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }
+                  num id = docData["id"];
+                  num year = docData["year"];
+                  num gpa = docData["gpa"];
+                  String name = docData["name"];
+                  String guide = docData["guide"];
+                  return columnHOD(
+                    guide: guide,
+                    name: name,
+                    id: id,
+                    gpa: gpa,
+                    year: year,
+                  );
                 },
               );
             } else {
-              print("hare Krishna!");
-              return const Text("Hare Krishna");
+              return const Text("No data");
             }
           },
         ),
@@ -154,7 +183,12 @@ class _HODPageState extends State<HODPage> {
     );
   }
 
-  Widget columnHOD({required String guide, required String name, required num id, required num gpa, required num year}) {
+  Widget columnHOD(
+      {required String guide,
+      required String name,
+      required num id,
+      required num gpa,
+      required num year}) {
     TextStyle textStyle1 = const TextStyle(color: Colors.white, fontSize: 20.0);
     TextStyle textStyle2 = const TextStyle(fontSize: 20.0);
     TextStyle textStyle4 = const TextStyle(fontSize: 18.0);
@@ -175,8 +209,6 @@ class _HODPageState extends State<HODPage> {
             ),
             backgroundColor: Colors.blue[100],
             collapsedBackgroundColor: Colors.blue[100],
-            // collapsedTextColor: Colors.white,
-            // textColor: Colors.white,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,7 +294,7 @@ class _HODPageState extends State<HODPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 4,
+                          width: MediaQuery.of(context).size.width / 4.5,
                           // MediaQuery.of(context).size.width / 4.9,
                           child: Text(
                             "Deny",
@@ -285,8 +317,7 @@ class _HODPageState extends State<HODPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: SizedBox(
-                          // width:
-                          // MediaQuery.of(context).size.width / 4.9,
+                          width: MediaQuery.of(context).size.width / 4.5,
                           child: Text(
                             "Approve",
                             style: textStyle1,
@@ -369,7 +400,7 @@ class HODDrawer extends StatelessWidget {
               Navigator.push(
                   context,
 
-                  /// Add Karo Idhar
+                  ///Add Karo Idhar
                   MaterialPageRoute(builder: (context) => const HODRecords()));
             },
           ),

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mtech_stipend/pages/hod/hod_page.dart';
+import 'package:mtech_stipend/pages/supervisor/supervisor_page.dart';
 // import 'package:mtech_stipend/pages/hod/hod/hod_page.dart';
 
 Future<void> main() async {
@@ -16,7 +17,7 @@ class StipendApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HODPage(),
+      home: SupervisorPage(),
       theme: Theme.of(context).copyWith(dividerColor: Colors.transparent),
     );
   }
