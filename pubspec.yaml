@@ -23,6 +23,12 @@ dependencies:
   firebase_core: ^2.4.1
   cloud_firestore: ^4.3.1
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,6 +39,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.12.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -44,7 +51,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-
+  assets:
+    - assets/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
