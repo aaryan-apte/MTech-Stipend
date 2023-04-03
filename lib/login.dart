@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:mtech_stipend/pages/supervisor/supervisor_page.dart';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
@@ -44,7 +45,7 @@ class _MyLoginState extends State<MyLogin> {
                           filled: true,
                           prefixIcon: Icon(Icons.person , color: Colors.black,),
                           hintText: 'Email ID ',
-                          helperText: 'Please enter the valid credentials',
+                          helperText: 'Please enter valid credentials',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10))),
                     ),
@@ -79,7 +80,9 @@ class _MyLoginState extends State<MyLogin> {
                             minimumSize: Size(250, 50),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10))),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => SupervisorPage(),));
+                        },
                         child: const Text('Sign In')),
                     SizedBox(
                       height: 40,
