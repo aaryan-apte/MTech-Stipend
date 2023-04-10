@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import 'package:mtech_stipend/pages/student/otp_verification.dart';
+// import '../../bucket.dart';
 import '../../loginRegister/authenticate.dart';
 
 class StudentForm extends StatefulWidget {
@@ -13,6 +15,12 @@ class StudentForm extends StatefulWidget {
 }
 
 class _StudentFormState extends State<StudentForm> {
+  EmailAuth emailAuth = EmailAuth(sessionName: "MTech Stipend");
+
+  void sendOtp() async {
+    bool result = await emailAuth.sendOtp(
+        recipientMail: emailController.value.text, otpLength: 5);
+  }
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -22,19 +30,100 @@ class _StudentFormState extends State<StudentForm> {
   TextEditingController branchController = TextEditingController();
   TextEditingController supervisorController = TextEditingController();
   TextEditingController hodController = TextEditingController();
-  TextEditingController financialAssistanceSourceController =TextEditingController();
+  TextEditingController financialAssistanceSourceController =
+      TextEditingController();
   TextEditingController amountController = TextEditingController();
+  bool isFundedOther = false;
 
   bool _isLoading = false;
   final formKey = GlobalKey<FormState>();
-  Future<void> addUser() async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    final String? uid = auth.currentUser?.email;
-    await users.doc(uid).set({
-      'date': DateTime.now(),
-    });
+  bool isVJTIian() {
+    String email = emailController.value.text.toLowerCase();
+    int i = 0;
+    while (email[i] != '@') {
+      i = i + 1;
+    }
+    i = i + 4;
+    if (email[i] == 'v' &&
+        email[i + 1] == 'j' &&
+        email[i + 2] == 't' &&
+        email[i + 3] == 'i') {
+      return true;
+    }
+    return false;
   }
+
+  Future<void> addUser() async {
+    Map<String, dynamic> map1 = {};
+    if (isFundedOther == true) {
+      map1 = {
+        "branch": branchController.text.trim(),
+        "name": nameController.text.trim(),
+        "email": emailController.text.trim(),
+        "registrationID": registrationIDController.text.trim(),
+        "year": int.parse(yearController.text.trim()),
+        "amount": int.parse(amountController.text.trim()),
+        "supervisor": supervisorController.text.trim(),
+        "hod": hodController.text.trim(),
+        "fundedOther": isFundedOther,
+        "assistanceFrom": financialAssistanceSourceController.text.trim(),
+      };
+    } else {
+      map1 = {
+        "branch": branchController.text.trim(),
+        "name": nameController.text.trim(),
+        "email": emailController.text.trim(),
+        "registrationID": registrationIDController.text.trim(),
+        "year": int.parse(yearController.text.trim()),
+        "supervisor": supervisorController.text.trim(),
+        "hod": hodController.text.trim(),
+      };
+    }
+    final users = FirebaseFirestore.instance
+        .collection('branch')
+        .doc(getBranch(emailController.text.trim()))
+        .collection('students')
+        .doc(emailController.text.trim())
+        .collection("applications")
+        .doc('details')
+        .set(map1);
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final String? email = auth.currentUser?.email;
+    // await users.doc(uid).set({
+    //   'date': DateTime.now(),
+    // });
+  }
+
+  String getBranch(String email) {
+    // final String? email = FirebaseAuth.instance.currentUser?.email;
+
+    int i = 0;
+    while (email[i] != '@') {
+      i = i + 1;
+    }
+    i = i + 1;
+    if (email[i] + email[i + 1] == "ce") {
+      return "ce";
+    } else if (email[i] + email[i + 1] == "it") {
+      return "it";
+    } else if (email[i] + email[i + 1] == "ee") {
+      return "ee";
+    } else if (email[i] + email[i + 1] == "me") {
+      return "me";
+    } else if (email[i] + email[i + 1] == "pe") {
+      return "pe";
+    } else if (email[i] + email[i + 1] == "tx") {
+      return "tx";
+    } else if (email[i] + email[i + 1] == "el") {
+      return "el";
+    } else if (email[i] + email[i + 1] == "ex") {
+      return "ex";
+    } else if (email[i] + email[i + 1] == "ci") {
+      return "ci";
+    }
+    return "NONE";
+  }
+
   void signUp() {
     final isValid = formKey.currentState!.validate();
     if (isValid == false) {
@@ -53,8 +142,8 @@ class _StudentFormState extends State<StudentForm> {
     // }
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim())
+            email: emailController.text.trim(),
+            password: passwordController.text.trim())
         .then((userCreds) {
       addUser().then((value) {
         setState(() {
@@ -75,6 +164,7 @@ class _StudentFormState extends State<StudentForm> {
       throw "error";
     });
   }
+
   final _months = [
     'January',
     'February',
@@ -140,11 +230,11 @@ class _StudentFormState extends State<StudentForm> {
     'Yes',
     'No',
   ];
-  String? _currentItemSelected4 = 'Yes';
+  String? isFundedOtherString = 'Yes';
   bool _shouldShowFin = false;
   @override
   Widget build(BuildContext context) {
-    if (_currentItemSelected4 == "Yes") {
+    if (isFundedOtherString == "Yes") {
       _shouldShowFin = true;
     } else {
       _shouldShowFin = false;
@@ -168,7 +258,7 @@ class _StudentFormState extends State<StudentForm> {
                     height: 15,
                   ),
                 ),
-                 Padding(
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   //padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextField(
@@ -182,8 +272,9 @@ class _StudentFormState extends State<StudentForm> {
                         prefixIcon: Icon(Icons.person)),
                   ),
                 ),
-                 Padding(
-                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, top: 15, bottom: 0),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15.0, right: 15.0, top: 15, bottom: 0),
                   //padding: EdgeInsets.symmetric(horizontal: 15),
                   child: TextField(
                     controller: passwordController,
@@ -223,46 +314,46 @@ class _StudentFormState extends State<StudentForm> {
                         prefixIcon: Icon(Icons.numbers)),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15.0, right: 15.0, top: 15, bottom: 0),
-                  //padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 250,
-                        child: DropdownButtonFormField<String>(
-                          decoration: InputDecoration(
-                            labelText: 'Month',
-                            border: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.brown, width: 2.0),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.calendar_month_outlined,
-                            ),
-                          ),
-                          items: _months.map((String dropDownStringItem) {
-                            return DropdownMenuItem<String>(
-                              value: dropDownStringItem,
-                              child: Text(
-                                dropDownStringItem,
-                                style: const TextStyle(fontSize: 16.5),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (String? newValueSelected) {
-                            setState(() {
-                              _currentItemSelected = newValueSelected;
-                            });
-                          },
-                          value: _currentItemSelected,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(
+                //       left: 15.0, right: 15.0, top: 15, bottom: 0),
+                //   //padding: EdgeInsets.symmetric(horizontal: 15),
+                //   child: Row(
+                //     children: [
+                //       // SizedBox(
+                //       //   width: 250,
+                //       //   child: DropdownButtonFormField<String>(
+                //       //     decoration: InputDecoration(
+                //       //       labelText: 'Month',
+                //       //       border: OutlineInputBorder(
+                //       //         borderSide:
+                //       //             const BorderSide(color: Colors.brown, width: 2.0),
+                //       //         borderRadius: BorderRadius.circular(10.0),
+                //       //       ),
+                //       //       prefixIcon: const Icon(
+                //       //         Icons.calendar_month_outlined,
+                //       //       ),
+                //       //     ),
+                //       //     items: _months.map((String dropDownStringItem) {
+                //       //       return DropdownMenuItem<String>(
+                //       //         value: dropDownStringItem,
+                //       //         child: Text(
+                //       //           dropDownStringItem,
+                //       //           style: const TextStyle(fontSize: 16.5),
+                //       //         ),
+                //       //       );
+                //       //     }).toList(),
+                //       //     onChanged: (String? newValueSelected) {
+                //       //       setState(() {
+                //       //         _currentItemSelected = newValueSelected;
+                //       //       });
+                //       //     },
+                //       //     value: _currentItemSelected,
+                //       //   ),
+                //       // ),
+                //     ],
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(
                       left: 15.0, right: 15.0, top: 15, bottom: 0),
@@ -275,8 +366,8 @@ class _StudentFormState extends State<StudentForm> {
                           decoration: InputDecoration(
                             labelText: 'Year',
                             border: OutlineInputBorder(
-                              borderSide:
-                                  const BorderSide(color: Colors.blue, width: 2.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.blue, width: 2.0),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             prefixIcon: const Icon(
@@ -376,10 +467,15 @@ class _StudentFormState extends State<StudentForm> {
                           }).toList(),
                           onChanged: (String? newValueSelected4) {
                             setState(() {
-                              _currentItemSelected4 = newValueSelected4;
+                              if (newValueSelected4 == "Yes") {
+                                isFundedOther = true;
+                                isFundedOtherString = "Yes";
+                              } else {
+                                isFundedOtherString = "No";
+                              }
                             });
                           },
-                          value: _currentItemSelected4,
+                          value: isFundedOtherString,
                         ),
                       ),
                       // if (_currentItemSelected4 == "Yes") {}
@@ -395,10 +491,11 @@ class _StudentFormState extends State<StudentForm> {
                     child: TextField(
                       controller: financialAssistanceSourceController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Financial Assistance from',
-                          hintText: 'Source of Financial Assistance',
-                          prefixIcon: Icon(Icons.monetization_on)),
+                        border: OutlineInputBorder(),
+                        labelText: 'Financial Assistance from',
+                        hintText: 'Source of Financial Assistance',
+                        prefixIcon: Icon(Icons.monetization_on),
+                      ),
                     ),
                   ),
                 ),
@@ -411,10 +508,11 @@ class _StudentFormState extends State<StudentForm> {
                     child: TextField(
                       controller: amountController,
                       decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Amount',
-                          hintText: 'Amount of Financial Assistance',
-                          prefixIcon: Icon(Icons.money)),
+                        border: OutlineInputBorder(),
+                        labelText: 'Amount',
+                        hintText: 'Amount of Financial Assistance',
+                        prefixIcon: Icon(Icons.money),
+                      ),
                     ),
                   ),
                 ),
@@ -425,10 +523,11 @@ class _StudentFormState extends State<StudentForm> {
                   child: TextField(
                     controller: supervisorController,
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Supervisor',
-                        hintText: "Supervisor's name",
-                        prefixIcon: Icon(Icons.supervisor_account_outlined)),
+                      border: OutlineInputBorder(),
+                      labelText: 'Supervisor',
+                      hintText: "Supervisor's name",
+                      prefixIcon: Icon(Icons.supervisor_account_outlined),
+                    ),
                   ),
                 ),
                 Padding(
@@ -438,17 +537,34 @@ class _StudentFormState extends State<StudentForm> {
                   child: TextField(
                     controller: hodController,
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'HOD',
-                        hintText: "HOD's name",
-                        prefixIcon: Icon(Icons.supervised_user_circle_outlined)),
+                      border: OutlineInputBorder(),
+                      labelText: 'HOD',
+                      hintText: "HOD's name",
+                      prefixIcon: Icon(Icons.supervised_user_circle_outlined),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
 
                 Center(
                   child: TextButton(
-                    onPressed: (){},
+                    onPressed: () {
+                      const snackBar = SnackBar(
+                          content: Text('Please enter your VJTI email ID'));
+                      if (isVJTIian()) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OTPVerification(
+                              email: emailController.value.text,
+                            ),
+                          ),
+                        );
+                        signUp();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    },
                     child: Container(
                       margin: const EdgeInsets.only(top: 20.0),
                       padding: const EdgeInsets.all(15.0),
@@ -456,7 +572,10 @@ class _StudentFormState extends State<StudentForm> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      child: const Text("Register", style: TextStyle(color: Colors.white, fontSize: 21.0),),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(color: Colors.white, fontSize: 21.0),
+                      ),
                     ),
                   ),
                 ),
