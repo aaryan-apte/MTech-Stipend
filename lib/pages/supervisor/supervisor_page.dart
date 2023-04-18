@@ -135,8 +135,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
         drawer: HODDrawer(textStyle3: textStyle3, textStyle2: textStyle2),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection("branch")
-              .doc(getBranch(email))
+              .collection("supervisor")
+              .doc(getBranch("muk"))         //todo: IDHAR EMAIL KARNA HAI
               .collection('supervisor')
               .doc("applications")
               .collection(DateTime.now().month.toString())
