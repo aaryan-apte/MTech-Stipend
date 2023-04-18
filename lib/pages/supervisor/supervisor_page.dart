@@ -21,11 +21,12 @@ class _SupervisorPageState extends State<SupervisorPage> {
         .collection("students")
         .doc(studentEmail)
         .collection('applications')
-        .doc("${DateTime.now().month}-${DateTime.now().year}");
+        .doc(
+            "${DateTime.now().month}-${DateTime.now().year} - ${DateTime.now().day}");
     Map<String, num> map = {"approved": 1};
-    try{
+    try {
       await pathSupervisor.set(map).then((value) => print("Success"));
-    } catch(e){
+    } catch (e) {
       print(e.toString());
     }
     print(studentEmail);

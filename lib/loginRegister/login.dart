@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mtech_stipend/pages/student/student_form.dart';
-// import 'package:flutter/src/widgets/framework.dart';
-// import 'package:flutter/src/widgets/placeholder.dart';
 
 class MyLogin extends StatefulWidget {
   const MyLogin({super.key});
@@ -13,13 +11,18 @@ class MyLogin extends StatefulWidget {
 
 class _MyLoginState extends State<MyLogin> {
 
+  var isLoading = false;
+
   Future signIn() async {
-    // showDialog(
-    //   context: context,
-    //   builder: (context) => Center(
-    //     child: CircularProgressIndicator(),
-    //   ),
-    // );
+    isLoading = true;
+    if(isLoading){
+      showDialog(
+        context: context,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     // final scaffold_key = GlobalKey<ScaffoldMessengerState>();
     try {
@@ -27,11 +30,14 @@ class _MyLoginState extends State<MyLogin> {
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
+      isLoading = false;
     } on FirebaseAuthException catch (e) {
+      isLoading = false;
       return ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e.toString(),
+            e.message.toString(),
+            textAlign: TextAlign.center,
             style: const TextStyle(color: Colors.white),
           ),
         ),
@@ -128,7 +134,7 @@ class _MyLoginState extends State<MyLogin> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const StudentForm(),
+                              builder: (context) => StudentForm(),
                             ),
                           );
                           // const StudentForm();
