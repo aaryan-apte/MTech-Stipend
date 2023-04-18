@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mtech_stipend/loginRegister/login.dart';
+import 'package:mtech_stipend/pages/student/studentHome.dart';
+import 'package:mtech_stipend/pages/student/student_form.dart';
 import 'package:mtech_stipend/pages/supervisor/attendance.dart';
 // import 'package:mtech_stipend/pages/hod/hod_page.dart';
 // import 'package:mtech_stipend/pages/supervisor/supervisor_page.dart';
@@ -19,7 +21,8 @@ class StipendApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: StudentList(),
+      home: StudentHome(),
+      // home: StudentForm(),
       theme: Theme.of(context).copyWith(dividerColor: Colors.transparent),
     );
   }

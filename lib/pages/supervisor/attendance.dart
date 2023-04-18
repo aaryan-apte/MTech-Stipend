@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 class Student {
   String name;
@@ -9,6 +9,8 @@ class Student {
 }
 
 class StudentList extends StatefulWidget {
+  const StudentList({super.key});
+
   @override
   _StudentListState createState() => _StudentListState();
 }
@@ -45,8 +47,8 @@ class _StudentListState extends State<StudentList> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   IconButton(
-                    color: Color.fromARGB(255, 67, 248, 73),
-                    icon: Icon(Icons.add),
+                    color: const Color.fromARGB(255, 67, 248, 73),
+                    icon: const Icon(Icons.add),
                     onPressed: () {
                       setState(() {
                         students[index].hours += 0.5;
@@ -55,8 +57,8 @@ class _StudentListState extends State<StudentList> {
                     },
                   ),
                   IconButton(
-                    color: Color.fromARGB(255, 248, 31, 16),
-                    icon: Icon(Icons.remove),
+                    color: const Color.fromARGB(255, 248, 31, 16),
+                    icon: const Icon(Icons.remove),
                     onPressed: () {
                       setState(() {
                         if (students[index].hours > 0) {
