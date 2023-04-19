@@ -1,6 +1,7 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mtech_stipend/login.dart';
 import 'package:mtech_stipend/pages/hod/hod_records.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -425,9 +426,11 @@ class HODDrawer extends StatelessWidget {
               "Log Out",
               style: textStyle2,
             ),
-            onTap: () {},
-            //onTap: Navigator.push(context,            /// Add Karo Idhar
-            //MaterialPageRoute(builder: (context) => FacultyPage())),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyLogin()));git
+            },
+
           )
         ],
       ),
