@@ -15,15 +15,22 @@ class SupervisorPage extends StatefulWidget {
 class _SupervisorPageState extends State<SupervisorPage> {
   TextEditingController reasonController = TextEditingController();
 
-  void sendData() {
+  Future<void> updateApprove(String studentEmail) async {
     final pathSupervisor = FirebaseFirestore.instance
         .collection("branch")
-        .doc(getBranch())
-        .collection("supervisor")
-        .doc(DateTime.now().month.toString())
-        .collection('applications');
-
-
+        .doc(getBranch(studentEmail))
+        .collection("students")
+        .doc(studentEmail)
+        .collection('applications')
+        .doc(
+            "${DateTime.now().month}-${DateTime.now().year} - ${DateTime.now().day}");
+    Map<String, num> map = {"approved": 1};
+    try {
+      await pathSupervisor.set(map).then((value) => print("Success"));
+    } catch (e) {
+      print(e.toString());
+    }
+    print(studentEmail);
   }
 
   void alertDialog() {
@@ -78,8 +85,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
   }
 
   // final String? email = FirebaseAuth.instance.currentUser?.email;
-  final String email = "ajapte_b21@ce.vjti.ac.in";
-  String getBranch() {
+  String email = "ajapte_b21@ce.vjti.ac.in";
+  String getBranch(String email) {
     // final String? email = FirebaseAuth.instance.currentUser?.email;
 
     int i = 0;
@@ -109,7 +116,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
     return "NONE";
   }
 
-  final firestoreInstance = FirebaseFirestore.instance;
+  // final firestoreInstance = FirebaseFirestore.instance;
 
   TextStyle textStyle1 = const TextStyle(color: Colors.white, fontSize: 20.0);
   TextStyle textStyle2 = const TextStyle(fontSize: 20.0);
@@ -129,8 +136,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
         drawer: HODDrawer(textStyle3: textStyle3, textStyle2: textStyle2),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection("branch")
-              .doc(getBranch())
+              .collection("supervisor")
+              .doc(getBranch("muk"))         //todo: IDHAR EMAIL KARNA HAI
               .collection('supervisor')
               .doc("applications")
               .collection(DateTime.now().month.toString())
@@ -138,13 +145,14 @@ class _SupervisorPageState extends State<SupervisorPage> {
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData) {
-              return Text("Empty");
+              return const Text("Empty");
             }
             if (snapshot.hasData) {
               print("Total objects: ${snapshot.data!.docs.length}");
               return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, int index) {
+                  final studentEmail = snapshot.data!.docs[index].id;
                   Map<String, dynamic> docData =
                       snapshot.data!.docs[index].data();
                   if (docData.isEmpty) {
@@ -166,6 +174,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
                     id: id,
                     gpa: gpa,
                     year: year,
+                    docID: studentEmail,
                   );
                 },
               );
@@ -189,7 +198,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
       required String name,
       required num id,
       required num gpa,
-      required num year}) {
+      required num year,
+      required String docID}) {
     TextStyle textStyle1 = const TextStyle(color: Colors.white, fontSize: 20.0);
     TextStyle textStyle2 = const TextStyle(fontSize: 20.0);
     TextStyle textStyle4 = const TextStyle(fontSize: 18.0);
@@ -307,7 +317,9 @@ class _SupervisorPageState extends State<SupervisorPage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      updateApprove(docID);
+                    },
                     style: TextButton.styleFrom(shadowColor: Colors.blue[100]),
                     child: Card(
                       shape: RoundedRectangleBorder(
