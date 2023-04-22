@@ -416,7 +416,7 @@ class HODDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyLogin()));git
+                  MaterialPageRoute(builder: (context) => MyLogin()));
             },
 
           )
