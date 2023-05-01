@@ -117,8 +117,9 @@ class _StudentHomeState extends State<StudentHome> {
               return ListView.separated(
                 itemBuilder: (context, int index) {
                   final documents = snapshot.data?.docs;
-                  String docID = documents![index].id.toString();
-                  String? month = monthMap[docID[0]];
+                  String docID = documents![index].id;
+                  String index1 = docID[0];
+                  String? month = monthMap[index1];
 
                   Map<String, dynamic> docData =
                       snapshot.data!.docs[index].data();
