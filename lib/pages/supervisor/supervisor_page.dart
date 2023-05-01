@@ -2,9 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mtech_stipend/login.dart';
-import 'package:mtech_stipend/pages/hod/hod_records.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mtech_stipend/pages/supervisor/supervisor_records.dart';
 
 class SupervisorPage extends StatefulWidget {
   const SupervisorPage({Key? key}) : super(key: key);
@@ -507,7 +505,7 @@ class HODDrawer extends StatelessWidget {
               Navigator.push(
                   context,
 
-                  MaterialPageRoute(builder: (context) => const SupervisorRecords()));
+                  MaterialPageRoute(builder: (context) =>  Container()));
             },
           ),
           Divider(
