@@ -1,9 +1,10 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mtech_stipend/login.dart';
+import 'package:mtech_stipend/loginRegister/login.dart';
 import 'package:mtech_stipend/pages/hod/hod_records.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mtech_stipend/pages/supervisor/supervisor_records.dart';
 
 class SupervisorPage extends StatefulWidget {
   const SupervisorPage({Key? key}) : super(key: key);
@@ -22,8 +23,6 @@ class _SupervisorPageState extends State<SupervisorPage> {
         .collection("supervisor")
         .doc(DateTime.now().month.toString())
         .collection('applications');
-
-
   }
 
   void alertDialog() {
@@ -122,18 +121,32 @@ class _SupervisorPageState extends State<SupervisorPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
-            "Supervisor - Stipend Applications",
+            "Supervisor Login",
             textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+                fontSize: 18),
           ),
+          backgroundColor: Colors.grey[100],
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: Colors.black54,
+              height: 0.2,
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.brown),
         ),
         drawer: HODDrawer(textStyle3: textStyle3, textStyle2: textStyle2),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
-              .collection("branch")
-              .doc(getBranch())
-              .collection('supervisor')
-              .doc("applications")
-              .collection(DateTime.now().month.toString())
+              .collection("supervisor")
+              .doc("muk")
+              .collection('students')
+              .doc("attendance")
+              .collection("${DateTime.now().month.toString()}-${DateTime.now().year.toString()}")
               .snapshots(),
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -146,7 +159,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, int index) {
                   Map<String, dynamic> docData =
-                      snapshot.data!.docs[index].data();
+                  snapshot.data!.docs[index].data();
                   if (docData.isEmpty) {
                     return const Center(
                       child: Text(
@@ -155,17 +168,48 @@ class _SupervisorPageState extends State<SupervisorPage> {
                       ),
                     );
                   }
+                  num totalAttendance = docData["totalAttendance"];
                   num id = docData["id"];
-                  num year = docData["year"];
-                  num gpa = docData["gpa"];
-                  String name = docData["name"];
-                  String guide = docData["guide"];
-                  return columnHOD(
-                    guide: guide,
-                    name: name,
-                    id: id,
-                    gpa: gpa,
-                    year: year,
+                  String name  = docData["name"];
+                  // String name = docData["name"];
+                  // String guide = docData["guide"];
+                  // return columnHOD(
+                  //   guide: guide,
+                  //   name: name,
+                  //   id: id,
+                  //   gpa: gpa,
+                  //   year: year,
+                  // );
+                  return Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10.0)
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.all(10.0),
+                              color: Colors.blue,
+                              child: Text("total attendance: $totalAttendance"),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.all(10.0),
+                              color: Colors.blue,
+                              child: Text("id: $id"),
+                            ),
+                            Container(
+                                margin: const EdgeInsets.all(10.0),
+                                color: Colors.blue,
+                                child: Text(name)
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   );
                 },
               );
@@ -186,10 +230,10 @@ class _SupervisorPageState extends State<SupervisorPage> {
 
   Widget columnHOD(
       {required String guide,
-      required String name,
-      required num id,
-      required num gpa,
-      required num year}) {
+        required String name,
+        required num id,
+        required num gpa,
+        required num year}) {
     TextStyle textStyle1 = const TextStyle(color: Colors.white, fontSize: 20.0);
     TextStyle textStyle2 = const TextStyle(fontSize: 20.0);
     TextStyle textStyle4 = const TextStyle(fontSize: 18.0);
@@ -285,8 +329,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
                       alertDialog();
                     },
                     style: TextButton.styleFrom(
-                        // elevation: 0.0
-                        ),
+                      // elevation: 0.0
+                    ),
                     child: Card(
                       color: Colors.red,
                       elevation: 3.0,
@@ -352,33 +396,50 @@ class HODDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.blue[50],
-      elevation: 6.0,
+      backgroundColor: Colors.white,
+      elevation: 20,
       child: ListView(
-        padding: const EdgeInsets.all(0.0),
+        // padding: const EdgeInsets.all(0.0),
         children: [
-          DrawerHeader(
-            padding: EdgeInsets.zero,
-            child: UserAccountsDrawerHeader(
-              margin: EdgeInsets.zero,
-              accountName: Text("Nikhil Soni", style: textStyle3),
-              accountEmail: const Text(
-                "nikhilsoni2910@gamil.com",
-                style: TextStyle(fontSize: 15),
-              ),
-              // currentAccountPicture: CircleAvatar(
-              //   backgroundImage: AssetImage(imageloc),
-              // ),
+          UserAccountsDrawerHeader(
+            // margin: EdgeInsets.zero,
+            accountName: Text(
+              "Nikhil Soni",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87),
             ),
+            //style: textStyle3),
+            accountEmail: const Text(
+              "nikhilsoni2910@gamil.com",
+              style: TextStyle(fontSize: 15, color: Colors.black45),
+            ),
+            currentAccountPicture: CircleAvatar(
+              backgroundColor: Colors.brown.shade100,
+              child: Text(
+                'N',
+                style: TextStyle(
+                    color: Colors.brown[700],
+                    fontSize: 25,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.brown.shade700, Colors.white])),
           ),
           ListTile(
             leading: const Icon(
-              CupertinoIcons.profile_circled,
-              size: 38.0,
+              Icons.person_pin,
+              size: 30,
             ),
             title: Text(
-              "Profile",
-              style: textStyle2,
+                "Profile",
+                style : TextStyle(fontSize: 16)
+
             ),
             onTap: () {
               // Navigator.push(
@@ -388,38 +449,89 @@ class HODDrawer extends StatelessWidget {
               //     MaterialPageRoute(builder: (context) => const HODRecords()));
             },
           ),
+          Divider(
+            height: 0.1,
+            color: Colors.black26,
+          ),
           ListTile(
             leading: const Icon(
-              Icons.timelapse_rounded,
-              size: 38.0,
+              Icons.fact_check,
+              size: 30.0,
             ),
             title: Text(
-              "View Records",
-              style: textStyle2,
+                "Take Attendance",
+                style : TextStyle(fontSize: 16)
+
+            ),
+            onTap: () {
+              //   Navigator.push(
+              //      context, MaterialPageRoute(builder: (context) => MyLogin()));
+            },
+          ),
+          Divider(
+            height: 0.1,
+            color: Colors.black26,
+          ),ListTile(
+            leading: const Icon(
+              Icons.assignment_rounded,
+              size: 30.0,
+            ),
+            title: Text(
+                "View Attendance",
+                style : TextStyle(fontSize: 16)
+
+            ),
+            onTap: () {
+              // Navigator.push(
+              //   //  context, MaterialPageRoute(builder: (context) => MyLogin()));
+            },
+          ),
+          Divider(
+            height: 0.1,
+            color: Colors.black26,
+          ),
+
+          ListTile(
+            leading: const Icon(
+              Icons.list,
+              size: 30.0,
+            ),
+            title: Text(
+                "View Records",
+                style : TextStyle(fontSize: 16)
+
             ),
             onTap: () {
               Navigator.push(
                   context,
 
-                  ///Add Karo Idhar
-                  MaterialPageRoute(builder: (context) => const HODRecords()));
+                  MaterialPageRoute(builder: (context) => const SupervisorRecords()));
             },
           ),
+          Divider(
+            height: 0.1,
+            color: Colors.black26,
+          ),
+
           ListTile(
             leading: const Icon(
               Icons.logout_rounded,
-              size: 38.0,
+              size: 30.0,
             ),
             title: Text(
-              "Log Out",
-              style: textStyle2,
+                "Log Out",
+                style : TextStyle(fontSize: 16)
+
             ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyLogin()));git
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => MyLogin()));
             },
-
-          )
+          ),
+          Divider(
+            height: 0.1,
+            color: Colors.black26,
+          ),
         ],
       ),
     );
