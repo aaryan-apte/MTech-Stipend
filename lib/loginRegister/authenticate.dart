@@ -28,7 +28,7 @@ class Authenticate2 extends StatelessWidget {
               child: Text('Something went wrong.'),
             );
           } else {
-            return const MyLogin();
+            return const LoginPage();
           }
         },
       ),
