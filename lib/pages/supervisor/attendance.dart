@@ -20,7 +20,9 @@ class _StudentListState extends State<StudentList> {
   final studentPath = FirebaseFirestore.instance
       .collection("supervisor")
       .doc("muk") // TODO: Idhar EMAIL DAALNA HAI
-      .collection("students");
+      .collection("students")
+      .doc("attendance")
+      .collection("${DateTime.now().month}-${DateTime.now().year}");
 
   String getStudentName(String email) {
     final studentName =
@@ -47,41 +49,48 @@ class _StudentListState extends State<StudentList> {
       ),
 
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('students').snapshots(),
+        stream: studentPath.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: Text('Loading...'));
+            return const Center(child: CircularProgressIndicator());
           }
-          return ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              return StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('students')
-                    .doc(document.id)
-                    .collection('attendance')
-                    .doc('${DateTime.now().month}-${DateTime.now().year}')
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> attendanceSnapshot) {
-                  if (attendanceSnapshot.hasError) {
-                    return Text('Error: ${attendanceSnapshot.error}');
-                  }
-                  if (attendanceSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(child: Text('Loading...'));
-                  }
-                  var totalAttendance = attendanceSnapshot.data?.get('totalAttendance') ?? 0;
-                  return ListTile(
-                    title: Text(document.id),
-                    subtitle: Text('Total Attendance: $totalAttendance'),
-                  );
-                },
-              );
-            }).toList(),
-          );
+          if(snapshot.hasData){
+            // final docData = ;
+            return  const Text("");
+
+          }
+          return const SizedBox();
+          // return ListView(
+          //   children: snapshot.data!.docs.map((DocumentSnapshot document) {
+          //     return StreamBuilder<DocumentSnapshot>(
+          //       stream: FirebaseFirestore.instance
+          //           .collection('students')
+          //           .doc(document.id)
+          //           .collection('attendance')
+          //           .doc('${DateTime.now().month}-${DateTime.now().year}')
+          //           .snapshots(),
+          //       builder: (BuildContext context,
+          //           AsyncSnapshot<DocumentSnapshot> attendanceSnapshot) {
+          //         if (attendanceSnapshot.hasError) {
+          //           return Text('Error: ${attendanceSnapshot.error}');
+          //         }
+          //         if (attendanceSnapshot.connectionState ==
+          //             ConnectionState.waiting) {
+          //           return const Center(child: Text('Loading...'));
+          //         }
+          //         var totalAttendance =
+          //             attendanceSnapshot.data?.get('totalAttendance') ?? 0;
+          //         return ListTile(
+          //           title: Text(document.id),
+          //           subtitle: Text('Total Attendance: $totalAttendance'),
+          //         );
+          //       },
+          //     );
+          //   }).toList(),
+          // );
         },
       ),
       // body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
