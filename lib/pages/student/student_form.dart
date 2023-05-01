@@ -176,6 +176,9 @@ class _StudentFormState extends State<StudentForm> {
     'Textile Technology': "textileTech"
   };
 
+
+
+
   void signUp() {
     final isValid = formKey.currentState!.validate();
     if (isValid == false) {
@@ -396,7 +399,7 @@ class _StudentFormState extends State<StudentForm> {
                     child: Row(
                       children: [
                         SizedBox(
-                          width: 310,
+                          width: 350,
                           child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               labelText: 'M.Tech in',
@@ -512,44 +515,51 @@ class _StudentFormState extends State<StudentForm> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  DropdownButtonFormField(
-                    value: _selectedGuide,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedGuide = value!;
-                      });
-                    },
-                    items: guide.guideList.keys
-                        .map((subject) => DropdownMenuItem(
-                              child: Text(subject),
-                              value: subject,
-                            ))
-                        .toList(),
-                    decoration: const InputDecoration(
-                      hintText: 'Select a subject',
-                    ),
-                  ),
+
+
+                  // DropdownButtonFormField(
+                  //   value: _selectedGuide,
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       _selectedGuide = value!;
+                  //     });
+                  //   },
+                  //   items: guide.guideList.keys
+                  //       .map((subject) => DropdownMenuItem(
+                  //             child: Text(subject),
+                  //             value: subject,
+                  //           ))
+                  //       .toList(),
+                  //   decoration: const InputDecoration(
+                  //     hintText: 'Select a subject',
+                  //   ),
+                  // ),
+
+
                   const SizedBox(height: 16.0),
                   const Text('Select a guide:'),
-                  DropdownButtonFormField(
-                    value: selectedGuide,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGuide = value!;
-                      });
-                    },
-                    items: _selectedGuide != null
-                        ? guide.guideList[_selectedGuide]
-                            ?.map((guide) => DropdownMenuItem(
-                                  value: guide,
-                                  child: Text(guide),
-                                ))
-                            .toList()
-                        : null,
-                    decoration: const InputDecoration(
-                      hintText: 'Select a guide',
-                    ),
-                  ),
+                  // DropdownButtonFormField(
+                  //   value: selectedGuide,
+                  //   onChanged: (value) {
+                  //     setState(() {
+                  //       selectedGuide = value!;
+                  //     });
+                  //   },
+                  //   items: _selectedGuide != null
+                  //       ? guide.guideList[_selectedGuide]
+                  //           ?.map((guide) => DropdownMenuItem(
+                  //                 value: guide,
+                  //                 child: Text(guide),
+                  //               ))
+                  //           .toList()
+                  //       : null,
+                  //   decoration: const InputDecoration(
+                  //     hintText: 'Select a guide',
+                  //   ),
+                  // ),
+
+
+
                   // SizedBox(
                   // width: 310,
                   // child: DropdownButtonFormField<String>(
