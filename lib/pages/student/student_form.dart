@@ -11,14 +11,14 @@ import '../supervisor/guide.dart';
 class StudentForm extends StatefulWidget {
   static String id = "/student_form";
 
-  StudentForm({super.key});
+  const StudentForm({super.key});
   @override
   _StudentFormState createState() => _StudentFormState();
 }
 
 class _StudentFormState extends State<StudentForm> {
   String _selectedGuide = "Manasi";
-  List<String> _selectedGuideList = [];
+  // List<String> _selectedGuideList = [];
   Guide guide = Guide();
 
   @override
@@ -30,10 +30,10 @@ class _StudentFormState extends State<StudentForm> {
 
   EmailAuth emailAuth = EmailAuth(sessionName: "MTech Stipend");
 
-  void sendOtp() async {
-    bool result = await emailAuth.sendOtp(
-        recipientMail: emailController.value.text, otpLength: 5);
-  }
+  // void sendOtp() async {
+  //   bool result = await emailAuth.sendOtp(
+  //       recipientMail: emailController.value.text, otpLength: 5);
+  // }
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -156,25 +156,25 @@ class _StudentFormState extends State<StudentForm> {
     'Mechanical (CAD/CAM)',
     'Textile Technology',
   ];
-  Map<String, String> guideMap = {
-    "Civil (Environmental)": 'civilEnvironmental',
-    'Civil (Structural)': "civilStructural",
-    'Civil (Construction)': 'civilConstruction',
-    "Electrical (Power System)": "electricalPowerSystem",
-    'Electrical (Control System)': "electricalControlSystem",
-    "Electronics (Power System)": "electronicsPowerSystem",
-    'Electronics & Telecom': "extc",
-    "Production": "production",
-    'Project Management': 'projectManagement',
-    'Computer': 'computer',
-    'Computer (NIMS)': 'computerNIMS',
-    'Computer (Software)': "computerSoftware",
-    'Mechanical (Machine Design)': "mechanicalMD",
-    'Mechanical (Automobile)': "mechanicalAuto",
-    'Mechanical (Thermal)': "mechanicalThermal",
-    "Mechanical (CAD/CAM)": 'mechanicalCADCAM',
-    'Textile Technology': "textileTech"
-  };
+  // Map<String, String> guideMap = {
+  //   "Civil (Environmental)": 'civilEnvironmental',
+  //   'Civil (Structural)': "civilStructural",
+  //   'Civil (Construction)': 'civilConstruction',
+  //   "Electrical (Power System)": "electricalPowerSystem",
+  //   'Electrical (Control System)': "electricalControlSystem",
+  //   "Electronics (Power System)": "electronicsPowerSystem",
+  //   'Electronics & Telecom': "extc",
+  //   "Production": "production",
+  //   'Project Management': 'projectManagement',
+  //   'Computer': 'computer',
+  //   'Computer (NIMS)': 'computerNIMS',
+  //   'Computer (Software)': "computerSoftware",
+  //   'Mechanical (Machine Design)': "mechanicalMD",
+  //   'Mechanical (Automobile)': "mechanicalAuto",
+  //   'Mechanical (Thermal)': "mechanicalThermal",
+  //   "Mechanical (CAD/CAM)": 'mechanicalCADCAM',
+  //   'Textile Technology': "textileTech"
+  // };
 
   void signUp() {
     final isValid = formKey.currentState!.validate();
@@ -258,7 +258,7 @@ class _StudentFormState extends State<StudentForm> {
     '2023'
   ];
   String? _currentItemSelected2 = '2023';
-  late String selectedGuide = guideMap.keys.first;
+  // late String selectedGuide = guideMap.keys.first;
 
   String? currentBranch = 'Civil (Environmental)';
   final _finance = [
@@ -521,8 +521,8 @@ class _StudentFormState extends State<StudentForm> {
                     },
                     items: guide.guideList.keys
                         .map((subject) => DropdownMenuItem(
-                              child: Text(subject),
                               value: subject,
+                              child: Text(subject),
                             ))
                         .toList(),
                     decoration: const InputDecoration(
@@ -532,10 +532,10 @@ class _StudentFormState extends State<StudentForm> {
                   const SizedBox(height: 16.0),
                   const Text('Select a guide:'),
                   DropdownButtonFormField(
-                    value: selectedGuide,
+                    value: _selectedGuide,
                     onChanged: (value) {
                       setState(() {
-                        selectedGuide = value!;
+                        _selectedGuide = value!;
                       });
                     },
                     items: _selectedGuide != null

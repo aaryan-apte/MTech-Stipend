@@ -85,10 +85,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
     super.initState();
   }
 
-  // final String? email = FirebaseAuth.instance.currentUser?.email;
   String email = "ajapte_b21@ce.vjti.ac.in";
   String getBranch(String email) {
-    // final String? email = FirebaseAuth.instance.currentUser?.email;
 
     int i = 0;
     while (email[i] != '@') {
