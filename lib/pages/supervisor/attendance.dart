@@ -1,13 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class Student {
-  String name;
-  double hours;
-
-  Student({required this.name, required this.hours});
-}
-
 class StudentList extends StatefulWidget {
   const StudentList({super.key});
 
@@ -82,7 +75,7 @@ class _StudentListState extends State<StudentList> {
       .collection("attendance")
       .doc("cs")
       .collection("${DateTime.now().month}-${DateTime.now().year}");
-      .collection("students");
+      // .doc("students");
 
   String getStudentName(String email) {
     final studentName =
@@ -264,7 +257,9 @@ class _StudentListState extends State<StudentList> {
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
                                     onPressed: () {
-                                      incrementAttendance(docID, week3, totalAttendance);
+                                      setState(() {
+                                        incrementAttendance(docID, week3, totalAttendance);
+                                      });
                                     },
                                     child: const Icon(Icons.add_rounded),
                                   ),
@@ -315,7 +310,9 @@ class _StudentListState extends State<StudentList> {
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
                                     onPressed: () {
-                                      incrementAttendance(docID, week4, totalAttendance);
+                                      setState(() {
+                                        incrementAttendance(docID, week4, totalAttendance);
+                                      });
                                     },
                                     child: const Icon(Icons.add_rounded),
                                   ),
@@ -368,7 +365,9 @@ class _StudentListState extends State<StudentList> {
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
                                     onPressed: () {
-                                      incrementAttendance(docID, week5, totalAttendance);
+                                      setState(() {
+                                        incrementAttendance(docID, week5, totalAttendance);
+                                      });
                                     },
                                     child: const Icon(Icons.add_rounded),
                                   ),
@@ -582,49 +581,49 @@ class _StudentListState extends State<StudentList> {
     //     ),
     //   ),
     // ),
-    
-      appBar: AppBar(
-        title: const Text('Attendance'),
-      ),
-
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('students').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: Text('Loading...'));
-          }
-          return ListView(
-            children: snapshot.data!.docs.map((DocumentSnapshot document) {
-              return StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('students')
-                    .doc(document.id)
-                    .collection('attendance')
-                    .doc('${DateTime.now().month}-${DateTime.now().year}')
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> attendanceSnapshot) {
-                  if (attendanceSnapshot.hasError) {
-                    return Text('Error: ${attendanceSnapshot.error}');
-                  }
-                  if (attendanceSnapshot.connectionState ==
-                      ConnectionState.waiting) {
-                    return const Center(child: Text('Loading...'));
-                  }
-                  var totalAttendance = attendanceSnapshot.data?.get('totalAttendance') ?? 0;
-                  return ListTile(
-                    title: Text(document.id),
-                    subtitle: Text('Total Attendance: $totalAttendance'),
-                  );
-                },
-              );
-            }).toList(),
-          );
-        },
-      ),
+    //
+    //   appBar: AppBar(
+    //     title: const Text('Attendance'),
+    //   ),
+    //
+    //   body: StreamBuilder<QuerySnapshot>(
+    //     stream: FirebaseFirestore.instance.collection('students').snapshots(),
+    //     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+    //       if (snapshot.hasError) {
+    //         return Center(child: Text('Error: ${snapshot.error}'));
+    //       }
+    //       if (snapshot.connectionState == ConnectionState.waiting) {
+    //         return const Center(child: Text('Loading...'));
+    //       }
+    //       return ListView(
+    //         children: snapshot.data!.docs.map((DocumentSnapshot document) {
+    //           return StreamBuilder<DocumentSnapshot>(
+    //             stream: FirebaseFirestore.instance
+    //                 .collection('students')
+    //                 .doc(document.id)
+    //                 .collection('attendance')
+    //                 .doc('${DateTime.now().month}-${DateTime.now().year}')
+    //                 .snapshots(),
+    //             builder: (BuildContext context,
+    //                 AsyncSnapshot<DocumentSnapshot> attendanceSnapshot) {
+    //               if (attendanceSnapshot.hasError) {
+    //                 return Text('Error: ${attendanceSnapshot.error}');
+    //               }
+    //               if (attendanceSnapshot.connectionState ==
+    //                   ConnectionState.waiting) {
+    //                 return const Center(child: Text('Loading...'));
+    //               }
+    //               var totalAttendance = attendanceSnapshot.data?.get('totalAttendance') ?? 0;
+    //               return ListTile(
+    //                 title: Text(document.id),
+    //                 subtitle: Text('Total Attendance: $totalAttendance'),
+    //               );
+    //             },
+    //           );
+    //         }).toList(),
+    //       );
+    //     },
+    //   ),
       // body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       //   stream: studentPath.snapshots(),
       //   builder: (context,
@@ -771,7 +770,7 @@ class _StudentListState extends State<StudentList> {
       //     ),
       //   ),
       // ),
-    );
+    // );
   }
 
   int getWeekNumber() {

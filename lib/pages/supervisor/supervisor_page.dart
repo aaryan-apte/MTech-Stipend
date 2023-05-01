@@ -77,9 +77,9 @@ class _SupervisorPageState extends State<SupervisorPage> {
   }
 
   String email = "ajapte_b21@ce.vjti.ac.in";
-  String getBranch(String email) {
+  // String getBranch(String email) {
   // final String? email = FirebaseAuth.instance.currentUser?.email;
-  final String email = "ajapte_b21@ce.vjti.ac.in";
+  // final String email = "ajapte_b21@ce.vjti.ac.in";
   String getBranch() {
     // final String? email = FirebaseAuth.instance.currentUser?.email;
 
@@ -530,7 +530,7 @@ class HODDrawer extends StatelessWidget {
                   context, MaterialPageRoute(builder: (context) => MyLogin()));
             },
           ),
-          Divider(
+          const Divider(
             height: 0.1,
             color: Colors.black26,
           ),
@@ -538,4 +538,5 @@ class HODDrawer extends StatelessWidget {
       ),
     );
   }
+
 }

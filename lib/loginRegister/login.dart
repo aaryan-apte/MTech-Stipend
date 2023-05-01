@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
   /// default
@@ -19,7 +20,7 @@ class _LoginPageState extends State<LoginPage>
   final studentFormKey = GlobalKey<FormState>();
   final hodFormKey = GlobalKey<FormState>();
   final supervisorFormKey = GlobalKey<FormState>();
-  
+
 
   //TextEditingController Objects and other controllers
   TextEditingController studentMailController = TextEditingController();
