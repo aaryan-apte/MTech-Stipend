@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'loginRegister/login.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
@@ -15,11 +16,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
-          context as BuildContext,
+          context,
           MaterialPageRoute(
-            builder: (context) => LoginPage(),
+
+            builder: (context) => const MyLogin(),
+
           ));
     });
   }
