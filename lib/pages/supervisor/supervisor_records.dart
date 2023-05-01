@@ -17,7 +17,23 @@ class _SupervisorRecordsState extends State<SupervisorRecords> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text("Records Page"),
+          title: const Text("Records Page",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+                fontSize: 18),
+          ),
+          backgroundColor: Colors.grey[100],
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: Colors.black54,
+              height: 0.2,
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.brown),
         ),
         body: ListView.builder(
           itemCount: 6,
