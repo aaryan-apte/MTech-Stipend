@@ -1,10 +1,11 @@
 // import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mtech_stipend/login.dart';
-import 'package:mtech_stipend/pages/hod/hod_records.dart';
+// import 'package:mtech_stipend/login.dart';
+// import 'package:mtech_stipend/pages/hod/hod_records.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mtech_stipend/pages/supervisor/supervisor_records.dart';
+
+import '../../loginRegister/login.dart';
 
 class SupervisorPage extends StatefulWidget {
   const SupervisorPage({Key? key}) : super(key: key);
@@ -17,12 +18,12 @@ class _SupervisorPageState extends State<SupervisorPage> {
   TextEditingController reasonController = TextEditingController();
 
   void sendData() {
-    final pathSupervisor = FirebaseFirestore.instance
-        .collection("branch")
-        .doc(getBranch())
-        .collection("supervisor")
-        .doc(DateTime.now().month.toString())
-        .collection('applications');
+    // final pathSupervisor = FirebaseFirestore.instance
+    //     .collection("branch")
+    //     .doc(getBranch())
+    //     .collection("supervisor")
+    //     .doc(DateTime.now().month.toString())
+    //     .collection('applications');
   }
 
   void alertDialog() {
@@ -139,7 +140,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
               height: 0.2,
             ),
           ),
-          iconTheme: IconThemeData(color: Colors.brown),
+          iconTheme: const IconThemeData(color: Colors.brown),
         ),
         drawer: HODDrawer(textStyle3: textStyle3, textStyle2: textStyle2),
         body: StreamBuilder(
@@ -153,7 +154,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData) {
-              return Text("Empty");
+              return const Text("Empty");
             }
             if (snapshot.hasData) {
               print("Total objects: ${snapshot.data!.docs.length}");
@@ -185,7 +186,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
                   return Column(
                     children: [
                       Container(
-                        margin: EdgeInsets.all(10.0),
+                        margin: const EdgeInsets.all(10.0),
                         decoration: BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.circular(10.0)
@@ -405,7 +406,7 @@ class HODDrawer extends StatelessWidget {
         children: [
           UserAccountsDrawerHeader(
             // margin: EdgeInsets.zero,
-            accountName: Text(
+            accountName: const Text(
               "Nikhil Soni",
               style: TextStyle(
                   fontSize: 18,
@@ -438,10 +439,9 @@ class HODDrawer extends StatelessWidget {
               Icons.person_pin,
               size: 30,
             ),
-            title: Text(
+            title: const Text(
                 "Profile",
                 style : TextStyle(fontSize: 16)
-
             ),
             onTap: () {
               // Navigator.push(
@@ -451,7 +451,7 @@ class HODDrawer extends StatelessWidget {
               //     MaterialPageRoute(builder: (context) => const HODRecords()));
             },
           ),
-          Divider(
+          const Divider(
             height: 0.1,
             color: Colors.black26,
           ),
@@ -460,7 +460,7 @@ class HODDrawer extends StatelessWidget {
               Icons.fact_check,
               size: 30.0,
             ),
-            title: Text(
+            title: const Text(
                 "Take Attendance",
                 style : TextStyle(fontSize: 16)
 
@@ -470,7 +470,7 @@ class HODDrawer extends StatelessWidget {
               //      context, MaterialPageRoute(builder: (context) => MyLogin()));
             },
           ),
-          Divider(
+          const Divider(
             height: 0.1,
             color: Colors.black26,
           ),ListTile(
@@ -478,7 +478,7 @@ class HODDrawer extends StatelessWidget {
               Icons.assignment_rounded,
               size: 30.0,
             ),
-            title: Text(
+            title: const Text(
                 "View Attendance",
                 style : TextStyle(fontSize: 16)
 
@@ -488,7 +488,7 @@ class HODDrawer extends StatelessWidget {
               //   //  context, MaterialPageRoute(builder: (context) => MyLogin()));
             },
           ),
-          Divider(
+          const Divider(
             height: 0.1,
             color: Colors.black26,
           ),
@@ -498,7 +498,7 @@ class HODDrawer extends StatelessWidget {
               Icons.list,
               size: 30.0,
             ),
-            title: Text(
+            title: const Text(
                 "View Records",
                 style : TextStyle(fontSize: 16)
 
@@ -510,7 +510,7 @@ class HODDrawer extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const SupervisorRecords()));
             },
           ),
-          Divider(
+          const Divider(
             height: 0.1,
             color: Colors.black26,
           ),
@@ -520,14 +520,14 @@ class HODDrawer extends StatelessWidget {
               Icons.logout_rounded,
               size: 30.0,
             ),
-            title: Text(
+            title: const Text(
                 "Log Out",
                 style : TextStyle(fontSize: 16)
 
             ),
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyLogin()));
+                  context, MaterialPageRoute(builder: (context) => const LoginPage()));
             },
           ),
           const Divider(

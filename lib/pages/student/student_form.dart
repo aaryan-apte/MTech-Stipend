@@ -17,7 +17,7 @@ class StudentForm extends StatefulWidget {
 }
 
 class _StudentFormState extends State<StudentForm> {
-  String _selectedGuide = "Manasi";
+  // String _selectedGuide = "Manasi";
   // List<String> _selectedGuideList = [];
   Guide guide = Guide();
 
@@ -109,7 +109,6 @@ class _StudentFormState extends State<StudentForm> {
 
   String getBranch(String email) {
     // final String? email = FirebaseAuth.instance.currentUser?.email;
-
     int i = 0;
     while (email[i] != '@') {
       i = i + 1;
@@ -149,7 +148,7 @@ class _StudentFormState extends State<StudentForm> {
     'Project Management',
     'Computer',
     'Computer (NIMS)',
-    'Computer (Software )',
+    'Computer (Software)',
     'Mechanical (Machine Design)',
     'Mechanical (Automobile)',
     'Mechanical (Thermal)',
@@ -175,9 +174,6 @@ class _StudentFormState extends State<StudentForm> {
   //   "Mechanical (CAD/CAM)": 'mechanicalCADCAM',
   //   'Textile Technology': "textileTech"
   // };
-
-
-
 
   void signUp() {
     final isValid = formKey.currentState!.validate();
@@ -261,8 +257,7 @@ class _StudentFormState extends State<StudentForm> {
     '2023'
   ];
   String? _currentItemSelected2 = '2023';
-  // late String selectedGuide = guideMap.keys.first;
-
+// late String selectedGuide = guideMap.keys.first;
   String? currentBranch = 'Civil (Environmental)';
   final _finance = [
     'Yes',
@@ -270,8 +265,13 @@ class _StudentFormState extends State<StudentForm> {
   ];
   String? isFundedOtherString = 'Yes';
   bool _shouldShowFin = false;
+  // List<String>? selected_supervisor =
+  //     Guide().guideList["Civil (Environmental)"];
+  // String currentSuper = Guide().guideList["Civil (Environmental)"]![0];
   @override
   Widget build(BuildContext context) {
+    List<String>? selected_supervisor = Guide().guideList["$currentBranch"];
+    String currentSuper = Guide().guideList["$currentBranch"]![0];
     if (isFundedOtherString == "Yes") {
       _shouldShowFin = true;
     } else {
@@ -399,7 +399,7 @@ class _StudentFormState extends State<StudentForm> {
                     child: Row(
                       children: [
                         SizedBox(
-                          width: 350,
+                          width: MediaQuery.of(context).size.width * 0.91,
                           child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
                               labelText: 'M.Tech in',
@@ -428,6 +428,49 @@ class _StudentFormState extends State<StudentForm> {
                               });
                             },
                             value: currentBranch,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Text("hi $currentBranch"),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 15.0, right: 15.0, top: 15, bottom: 0),
+                    //padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.91,
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                              labelText: 'Supervisor',
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Color.fromARGB(255, 55, 71, 79),
+                                    width: 2.0),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              prefixIcon: const Icon(
+                                Icons.people,
+                              ),
+                            ),
+                            items: selected_supervisor
+                                ?.map((String dropDownStringItem14) {
+                              return DropdownMenuItem<String>(
+                                value: dropDownStringItem14,
+                                child: Text(
+                                  dropDownStringItem14,
+                                  style: const TextStyle(fontSize: 16.5),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValueSelected14) {
+                              setState(() {
+                                currentSuper = newValueSelected14!;
+                              });
+                            },
+                            value: currentSuper,
                           ),
                         ),
                       ],

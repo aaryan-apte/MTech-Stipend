@@ -19,6 +19,7 @@ dependencies:
   email_auth: ^1.0.0
   progress_timeline: ^0.0.5
   font_awesome_flutter: ^10.4.0
+  month_year_picker: ^0.2.0+2
 
 flutter_icons:
   android: true

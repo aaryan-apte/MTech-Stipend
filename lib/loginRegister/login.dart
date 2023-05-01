@@ -1,7 +1,12 @@
 import 'dart:math';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mtech_stipend/pages/forgot_pw_page.dart';
+// import 'package:mtech_stipend/pages/hod/hod_page.dart';
+import 'package:mtech_stipend/pages/student/studentHome.dart';
+import 'package:mtech_stipend/pages/student/student_form.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,7 +26,6 @@ class _LoginPageState extends State<LoginPage>
   final hodFormKey = GlobalKey<FormState>();
   final supervisorFormKey = GlobalKey<FormState>();
 
-
   //TextEditingController Objects and other controllers
   TextEditingController studentMailController = TextEditingController();
   TextEditingController studentPasswordController = TextEditingController();
@@ -31,7 +35,7 @@ class _LoginPageState extends State<LoginPage>
   TextEditingController hodPasswordController = TextEditingController();
 
   PageController? _pageController;
-  // String? _key;
+  final _auth = FirebaseAuth.instance;
 
   //Variables
   bool _student = true;
@@ -40,7 +44,7 @@ class _LoginPageState extends State<LoginPage>
   // bool? valid;
   Color left = Colors.black;
   Color right = Colors.black;
-  Color middle=Colors.black;
+  Color middle = Colors.black;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,28 +72,7 @@ class _LoginPageState extends State<LoginPage>
                 flex: 2,
                 child: PageView(
                   controller: _pageController,
-                  onPageChanged: (i) {
-                    // if (i == 0) {
-                    //   setState(() {
-                    //     right = Colors.white;
-                    //     left = Colors.black;
-                    //     middle=Colors.white;
-                    //   });
-                    // } else if (i == 1) {
-                    //   setState(() {
-                    //     right = Colors.white;
-                    //     middle=Colors.black;
-                    //     left = Colors.white;
-
-                    //   });
-                    // }else if (i == 2) {
-                    //   setState(() {
-                    //     right = Colors.black;
-                    //     middle=Colors.white;
-                    //     left = Colors.white;
-                    //   });
-                    // }
-                  },
+                  onPageChanged: (i) {},
                   children: <Widget>[
                     ConstrainedBox(
                       constraints: const BoxConstraints.expand(),
@@ -221,6 +204,52 @@ class _LoginPageState extends State<LoginPage>
     );
   }
 
+  void userAuth(String email, String password) async {
+    User? user;
+    try {
+      user = (await _auth.signInWithEmailAndPassword(
+              email: email, password: password))
+          .user;
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    } finally {
+      if (user != null) {
+        // getCurrentUser();
+        if (isStudent(email)) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => StudentHome()),
+          );
+        } else {
+          invalidSnackBar('invalid user');
+        }
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (_) => HODPage()),
+        // );
+      } else {
+        invalidSnackBar('invalid user');
+      }
+    }
+  }
+
+  bool isStudent(String email) {
+    var i = 0;
+    while (email[i] != '@') {
+      i = i + 1;
+    }
+    return isDigit(email[i - 1]);
+  }
+
+  bool isDigit(String s) {
+    if (s == null) {
+      return false;
+    }
+    return int.tryParse(s) != null;
+  }
+
   Widget _buildeStudent(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 23.0),
@@ -273,7 +302,7 @@ class _LoginPageState extends State<LoginPage>
                                   if (input!.isEmpty) {
                                     return 'Enter Email Address';
                                   } else if (!RegExp(
-                                          r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                                          r"[a-z0-9!#$%&'*+/=?^_{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                                       .hasMatch(input)) {
                                     return 'Valid Email Required';
                                   }
@@ -363,8 +392,8 @@ class _LoginPageState extends State<LoginPage>
                   highlightColor: Colors.transparent,
                   splashColor: const Color(0xFFf7418c),
                   onPressed: () {
-                    // getUser();
-                    // adminAuth();
+                    userAuth(studentMailController.text,
+                        studentPasswordController.text);
                   },
                   child: const Padding(
                     padding:
@@ -386,9 +415,9 @@ class _LoginPageState extends State<LoginPage>
           ),
           TextButton(
             onPressed: () {
-              // Navigator.of(context).push(
-              //   MaterialPageRoute(builder: (_) => userCheck()),
-              // );
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => StudentForm()),
+              );
             },
             child: const Text(
               'Register',
@@ -398,6 +427,9 @@ class _LoginPageState extends State<LoginPage>
           ),
           TextButton(
             onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ForgotPasswordPage()),
+              );
             },
             child: const Text(
               'Forget Password?',
@@ -462,7 +494,7 @@ class _LoginPageState extends State<LoginPage>
                                   if (input!.isEmpty) {
                                     return 'Enter Email Address';
                                   } else if (!RegExp(
-                                          r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                                          r"[a-z0-9!#$%&'*+/=?^_{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                                       .hasMatch(input)) {
                                     return 'Valid Email Required';
                                   }
@@ -555,6 +587,8 @@ class _LoginPageState extends State<LoginPage>
                   highlightColor: Colors.transparent,
                   splashColor: const Color(0xFFf7418c),
                   onPressed: () {
+                    userAuth(
+                        hodMailController.text, hodPasswordController.text);
                   },
                   child: const Padding(
                     padding:
@@ -588,6 +622,9 @@ class _LoginPageState extends State<LoginPage>
           ),
           TextButton(
             onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ForgotPasswordPage()),
+              );
             },
             child: const Text(
               'Forget Password?',
@@ -652,7 +689,7 @@ class _LoginPageState extends State<LoginPage>
                                   if (input!.isEmpty) {
                                     return 'Enter Email Address';
                                   } else if (!RegExp(
-                                          r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                                          r"[a-z0-9!#$%&'*+/=?^_{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                                       .hasMatch(input)) {
                                     return 'Valid Email Required';
                                   }
@@ -745,6 +782,8 @@ class _LoginPageState extends State<LoginPage>
                   highlightColor: Colors.transparent,
                   splashColor: const Color(0xFFf7418c),
                   onPressed: () {
+                    userAuth(supervisorMailController.text,
+                        supervisorPasswordController.text);
                   },
                   child: const Padding(
                     padding:
@@ -778,6 +817,9 @@ class _LoginPageState extends State<LoginPage>
           ),
           TextButton(
             onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => ForgotPasswordPage()),
+              );
             },
             child: const Text(
               'Forget Password?',
@@ -799,6 +841,7 @@ class _LoginPageState extends State<LoginPage>
     _pageController?.animateToPage(1,
         duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
   }
+
   void _hodPress() {
     _pageController?.animateToPage(2,
         duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
@@ -815,6 +858,7 @@ class _LoginPageState extends State<LoginPage>
       _hod = !_hod;
     });
   }
+
   void _toggleSupervisor() {
     setState(() {
       _supervisor = !_supervisor;
