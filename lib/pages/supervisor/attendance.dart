@@ -16,6 +16,63 @@ class StudentList extends StatefulWidget {
 }
 
 class _StudentListState extends State<StudentList> {
+  incrementAttendance(String docID, num attendance, num totalAttendance) {
+    num weekNumber1 = DateTime.now().day / 7 + 1;
+    if(weekNumber1 <=1 && weekNumber1 < 2){
+      weekNumber1 = 1;
+    }
+    if(weekNumber1 <=2 && weekNumber1 < 3){
+      weekNumber1 = 2;
+    }
+    if(weekNumber1 <=3 && weekNumber1 < 4){
+      weekNumber1 = 3;
+    }
+    if(weekNumber1 <=4 && weekNumber1 < 5){
+      weekNumber1 = 4;
+    }
+    if(weekNumber1 <=5 && weekNumber1 < 6){
+      weekNumber1 = 5;
+    }
+    attendance = attendance + 1;
+    totalAttendance = totalAttendance + 1;
+    Map<String, dynamic> map1 = {weekNumber1.toString(): attendance, "totalAttendance": totalAttendance};
+    final pathUpdate = FirebaseFirestore.instance
+        .collection("supervisor")
+        .doc("muk") // TODO: Idhar EMAIL DAALNA HAI
+        .collection("attendance")
+        .doc("cs")
+        .collection("${DateTime.now().month}-${DateTime.now().year}").doc(docID);
+
+    try{
+      pathUpdate.update(map1);
+    } catch(e){
+      return SnackBar(
+        content: Text(e.toString()),
+      );
+    }
+  }
+
+  decrementAttendance(String docID, num attendance, num totalAttendance) {
+    int weekNumber1 = DateTime.now().day / 7 + 1 as int;
+    attendance = attendance - 1;
+    totalAttendance = totalAttendance - 1;
+    Map<String, dynamic> map1 = {weekNumber1.toString(): attendance, "totalAttendance": totalAttendance};
+    final pathUpdate = FirebaseFirestore.instance
+        .collection("supervisor")
+        .doc("muk") // TODO: Idhar EMAIL DAALNA HAI
+        .collection("attendance")
+        .doc("cs")
+        .collection("${DateTime.now().month}-${DateTime.now().year}").doc(docID);
+
+    try{
+      pathUpdate.update(map1);
+    } catch(e){
+      return SnackBar(
+        content: Text(e.toString()),
+      );
+    }
+  }
+
   TextStyle textStyle1 = const TextStyle(
       fontWeight: FontWeight.w800, fontSize: 21.0, color: Colors.white);
 
@@ -55,14 +112,21 @@ class _StudentListState extends State<StudentList> {
               }
               if (snapshot.hasData && snapshot.data != null) {
                 print("Total Documents: ${snapshot.data!.docs.length}");
+
                 if (snapshot.data!.docs.isNotEmpty) {
-                  double weekNumber = 2;
+                  final documents = snapshot.data?.docs;
+                  double weekNumber = (DateTime.now().day / 7 + 1);
+
                   return ListView.builder(
                     itemCount: snapshot.data?.docs.length,
+
                     itemBuilder: (context, int index) {
+
+                      final docID = documents![index].id;
                       final Map<String, dynamic>? docData =
                           snapshot.data?.docs[index].data()
                               as Map<String, dynamic>?;
+
                       if (docData!.isEmpty) {
                         return const Center(
                             child: Text(
@@ -72,7 +136,9 @@ class _StudentListState extends State<StudentList> {
                       }
                       num totalAttendance = docData["totalAttendance"];
                       String name = docData["name"];
-                      if (1 <= weekNumber && docData["1"] != null) {
+                      if (1 <= weekNumber &&
+                          weekNumber < 2 &&
+                          docData["1"] != null) {
                         num week1 = docData["1"];
                         return Container(
                           margin: const EdgeInsets.all(10.0),
@@ -95,7 +161,11 @@ class _StudentListState extends State<StudentList> {
                                         backgroundColor: Colors.transparent,
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setState(() {
+                                        incrementAttendance(docID, week1, totalAttendance);
+                                      });
+                                    },
                                     child: const Icon(Icons.add_rounded),
                                   ),
                                   TextButton(
@@ -103,7 +173,11 @@ class _StudentListState extends State<StudentList> {
                                         shape: const CircleBorder(),
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.red),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setState(() {
+                                        decrementAttendance(docID, week1, totalAttendance);
+                                      });
+                                    },
                                     child: const Icon(Icons.remove),
                                   ),
                                 ],
@@ -111,8 +185,9 @@ class _StudentListState extends State<StudentList> {
                             ],
                           ),
                         );
-                      }
-                      else if (2 <= weekNumber && docData["2"] != null) {
+                      } else if (2 <= weekNumber &&
+                          weekNumber < 3 &&
+                          docData["2"] != null) {
                         num week1 = docData["1"];
                         num week2 = docData["2"];
                         return Container(
@@ -137,7 +212,9 @@ class _StudentListState extends State<StudentList> {
                                         backgroundColor: Colors.transparent,
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      incrementAttendance(docID, week2, totalAttendance);
+                                    },
                                     child: const Icon(Icons.add_rounded),
                                   ),
                                   TextButton(
@@ -145,7 +222,9 @@ class _StudentListState extends State<StudentList> {
                                         shape: const CircleBorder(),
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.red),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      decrementAttendance(docID, week2, totalAttendance);
+                                    },
                                     child: const Icon(Icons.remove),
                                   ),
                                 ],
@@ -153,8 +232,9 @@ class _StudentListState extends State<StudentList> {
                             ],
                           ),
                         );
-                      }
-                      else if (3 <= weekNumber && docData["3"] != null) {
+                      } else if (3 <= weekNumber &&
+                          weekNumber < 4 &&
+                          docData["3"] != null) {
                         num week1 = docData["1"];
                         num week2 = docData["2"];
                         num week3 = docData["3"];
@@ -181,7 +261,9 @@ class _StudentListState extends State<StudentList> {
                                         backgroundColor: Colors.transparent,
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      incrementAttendance(docID, week3, totalAttendance);
+                                    },
                                     child: const Icon(Icons.add_rounded),
                                   ),
                                   TextButton(
@@ -189,7 +271,9 @@ class _StudentListState extends State<StudentList> {
                                         shape: const CircleBorder(),
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.red),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      decrementAttendance(docID, week3, totalAttendance);
+                                    },
                                     child: const Icon(Icons.remove),
                                   ),
                                 ],
@@ -197,8 +281,9 @@ class _StudentListState extends State<StudentList> {
                             ],
                           ),
                         );
-                      }
-                      else if (4 <= weekNumber && docData["4"] != null) {
+                      } else if (4 <= weekNumber &&
+                          weekNumber < 5 &&
+                          docData["4"] != null) {
                         num week1 = docData["1"];
                         num week2 = docData["2"];
                         num week3 = docData["3"];
@@ -227,7 +312,9 @@ class _StudentListState extends State<StudentList> {
                                         backgroundColor: Colors.transparent,
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      incrementAttendance(docID, week4, totalAttendance);
+                                    },
                                     child: const Icon(Icons.add_rounded),
                                   ),
                                   TextButton(
@@ -235,7 +322,9 @@ class _StudentListState extends State<StudentList> {
                                         shape: const CircleBorder(),
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.red),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      decrementAttendance(docID, week4, totalAttendance);
+                                    },
                                     child: const Icon(Icons.remove),
                                   ),
                                 ],
@@ -243,8 +332,9 @@ class _StudentListState extends State<StudentList> {
                             ],
                           ),
                         );
-                      }
-                      else if (5 <= weekNumber && docData["5"] != null) {
+                      } else if (5 <= weekNumber &&
+                          weekNumber < 6 &&
+                          docData["5"] != null) {
                         num week1 = docData["1"];
                         num week2 = docData["2"];
                         num week3 = docData["3"];
@@ -275,7 +365,9 @@ class _StudentListState extends State<StudentList> {
                                         backgroundColor: Colors.transparent,
                                         // surfaceTintColor: Colors.green,
                                         foregroundColor: Colors.green),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      incrementAttendance(docID, week5, totalAttendance);
+                                    },
                                     child: const Icon(Icons.add_rounded),
                                   ),
                                   TextButton(
@@ -283,7 +375,9 @@ class _StudentListState extends State<StudentList> {
                                         shape: const CircleBorder(),
                                         backgroundColor: Colors.transparent,
                                         foregroundColor: Colors.red),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      decrementAttendance(docID, week5, totalAttendance);
+                                    },
                                     child: const Icon(Icons.remove),
                                   ),
                                 ],
