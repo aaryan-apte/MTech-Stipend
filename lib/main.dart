@@ -22,7 +22,7 @@ class StipendApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: SupervisorPage(),
+      home: StudentForm(),
       // home: StudentForm(),
       theme: Theme.of(context).copyWith(dividerColor: Colors.transparent),
     );

@@ -1,10 +1,10 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mtech_stipend/loginRegister/login.dart';
 import 'package:mtech_stipend/pages/hod/hod_records.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mtech_stipend/pages/supervisor/supervisor_records.dart';
+
+import '../../loginRegister/login.dart';
 
 class SupervisorPage extends StatefulWidget {
   const SupervisorPage({Key? key}) : super(key: key);
@@ -16,13 +16,22 @@ class SupervisorPage extends StatefulWidget {
 class _SupervisorPageState extends State<SupervisorPage> {
   TextEditingController reasonController = TextEditingController();
 
-  void sendData() {
+  Future<void> updateApprove(String studentEmail) async {
     final pathSupervisor = FirebaseFirestore.instance
         .collection("branch")
-        .doc(getBranch())
-        .collection("supervisor")
-        .doc(DateTime.now().month.toString())
-        .collection('applications');
+        .doc(getBranch(studentEmail))
+        .collection("students")
+        .doc(studentEmail)
+        .collection('applications')
+        .doc(
+            "${DateTime.now().month}-${DateTime.now().year} - ${DateTime.now().day}");
+    Map<String, num> map = {"approved": 1};
+    try {
+      await pathSupervisor.set(map).then((value) => print("Success"));
+    } catch (e) {
+      print(e.toString());
+    }
+    print(studentEmail);
   }
 
   void alertDialog() {
@@ -77,8 +86,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
   }
 
   // final String? email = FirebaseAuth.instance.currentUser?.email;
-  final String email = "ajapte_b21@ce.vjti.ac.in";
-  String getBranch() {
+  String email = "ajapte_b21@ce.vjti.ac.in";
+  String getBranch(String email) {
     // final String? email = FirebaseAuth.instance.currentUser?.email;
 
     int i = 0;
@@ -108,7 +117,7 @@ class _SupervisorPageState extends State<SupervisorPage> {
     return "NONE";
   }
 
-  final firestoreInstance = FirebaseFirestore.instance;
+  // final firestoreInstance = FirebaseFirestore.instance;
 
   TextStyle textStyle1 = const TextStyle(color: Colors.white, fontSize: 20.0);
   TextStyle textStyle2 = const TextStyle(fontSize: 20.0);
@@ -121,45 +130,32 @@ class _SupervisorPageState extends State<SupervisorPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
-            "Supervisor Login",
+            "Supervisor - Stipend Applications",
             textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-                fontSize: 18),
           ),
-          backgroundColor: Colors.grey[100],
-          elevation: 0,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4.0),
-            child: Container(
-              color: Colors.black54,
-              height: 0.2,
-            ),
-          ),
-          iconTheme: IconThemeData(color: Colors.brown),
         ),
         drawer: HODDrawer(textStyle3: textStyle3, textStyle2: textStyle2),
         body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("supervisor")
-              .doc("muk")
-              .collection('students')
-              .doc("attendance")
-              .collection("${DateTime.now().month.toString()}-${DateTime.now().year.toString()}")
+              .doc(getBranch("muk"))         //todo: IDHAR EMAIL KARNA HAI
+              .collection('supervisor')
+              .doc("applications")
+              .collection(DateTime.now().month.toString())
               .snapshots(),
           builder: (context,
               AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (!snapshot.hasData) {
-              return Text("Empty");
+              return const Text("Empty");
             }
             if (snapshot.hasData) {
               print("Total objects: ${snapshot.data!.docs.length}");
               return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context, int index) {
+                  final studentEmail = snapshot.data!.docs[index].id;
                   Map<String, dynamic> docData =
-                  snapshot.data!.docs[index].data();
+                      snapshot.data!.docs[index].data();
                   if (docData.isEmpty) {
                     return const Center(
                       child: Text(
@@ -168,48 +164,18 @@ class _SupervisorPageState extends State<SupervisorPage> {
                       ),
                     );
                   }
-                  num totalAttendance = docData["totalAttendance"];
                   num id = docData["id"];
-                  String name  = docData["name"];
-                  // String name = docData["name"];
-                  // String guide = docData["guide"];
-                  // return columnHOD(
-                  //   guide: guide,
-                  //   name: name,
-                  //   id: id,
-                  //   gpa: gpa,
-                  //   year: year,
-                  // );
-                  return Column(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(10.0)
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(10.0),
-                              color: Colors.blue,
-                              child: Text("total attendance: $totalAttendance"),
-                            ),
-                            Container(
-                              margin: const EdgeInsets.all(10.0),
-                              color: Colors.blue,
-                              child: Text("id: $id"),
-                            ),
-                            Container(
-                                margin: const EdgeInsets.all(10.0),
-                                color: Colors.blue,
-                                child: Text(name)
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  num year = docData["year"];
+                  num gpa = docData["gpa"];
+                  String name = docData["name"];
+                  String guide = docData["guide"];
+                  return columnHOD(
+                    guide: guide,
+                    name: name,
+                    id: id,
+                    gpa: gpa,
+                    year: year,
+                    docID: studentEmail,
                   );
                 },
               );
@@ -230,10 +196,11 @@ class _SupervisorPageState extends State<SupervisorPage> {
 
   Widget columnHOD(
       {required String guide,
-        required String name,
-        required num id,
-        required num gpa,
-        required num year}) {
+      required String name,
+      required num id,
+      required num gpa,
+      required num year,
+      required String docID}) {
     TextStyle textStyle1 = const TextStyle(color: Colors.white, fontSize: 20.0);
     TextStyle textStyle2 = const TextStyle(fontSize: 20.0);
     TextStyle textStyle4 = const TextStyle(fontSize: 18.0);
@@ -329,8 +296,8 @@ class _SupervisorPageState extends State<SupervisorPage> {
                       alertDialog();
                     },
                     style: TextButton.styleFrom(
-                      // elevation: 0.0
-                    ),
+                        // elevation: 0.0
+                        ),
                     child: Card(
                       color: Colors.red,
                       elevation: 3.0,
@@ -351,7 +318,9 @@ class _SupervisorPageState extends State<SupervisorPage> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      updateApprove(docID);
+                    },
                     style: TextButton.styleFrom(shadowColor: Colors.blue[100]),
                     child: Card(
                       shape: RoundedRectangleBorder(
@@ -396,50 +365,33 @@ class HODDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.white,
-      elevation: 20,
+      backgroundColor: Colors.blue[50],
+      elevation: 6.0,
       child: ListView(
-        // padding: const EdgeInsets.all(0.0),
+        padding: const EdgeInsets.all(0.0),
         children: [
-          UserAccountsDrawerHeader(
-            // margin: EdgeInsets.zero,
-            accountName: Text(
-              "Nikhil Soni",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87),
-            ),
-            //style: textStyle3),
-            accountEmail: const Text(
-              "nikhilsoni2910@gamil.com",
-              style: TextStyle(fontSize: 15, color: Colors.black45),
-            ),
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.brown.shade100,
-              child: Text(
-                'N',
-                style: TextStyle(
-                    color: Colors.brown[700],
-                    fontSize: 25,
-                    fontWeight: FontWeight.normal),
+          DrawerHeader(
+            padding: EdgeInsets.zero,
+            child: UserAccountsDrawerHeader(
+              margin: EdgeInsets.zero,
+              accountName: Text("Nikhil Soni", style: textStyle3),
+              accountEmail: const Text(
+                "nikhilsoni2910@gamil.com",
+                style: TextStyle(fontSize: 15),
               ),
+              // currentAccountPicture: CircleAvatar(
+              //   backgroundImage: AssetImage(imageloc),
+              // ),
             ),
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Colors.brown.shade700, Colors.white])),
           ),
           ListTile(
             leading: const Icon(
-              Icons.person_pin,
-              size: 30,
+              CupertinoIcons.profile_circled,
+              size: 38.0,
             ),
             title: Text(
-                "Profile",
-                style : TextStyle(fontSize: 16)
-
+              "Profile",
+              style: textStyle2,
             ),
             onTap: () {
               // Navigator.push(
@@ -449,89 +401,38 @@ class HODDrawer extends StatelessWidget {
               //     MaterialPageRoute(builder: (context) => const HODRecords()));
             },
           ),
-          Divider(
-            height: 0.1,
-            color: Colors.black26,
-          ),
           ListTile(
             leading: const Icon(
-              Icons.fact_check,
-              size: 30.0,
+              Icons.timelapse_rounded,
+              size: 38.0,
             ),
             title: Text(
-                "Take Attendance",
-                style : TextStyle(fontSize: 16)
-
-            ),
-            onTap: () {
-              //   Navigator.push(
-              //      context, MaterialPageRoute(builder: (context) => MyLogin()));
-            },
-          ),
-          Divider(
-            height: 0.1,
-            color: Colors.black26,
-          ),ListTile(
-            leading: const Icon(
-              Icons.assignment_rounded,
-              size: 30.0,
-            ),
-            title: Text(
-                "View Attendance",
-                style : TextStyle(fontSize: 16)
-
-            ),
-            onTap: () {
-              // Navigator.push(
-              //   //  context, MaterialPageRoute(builder: (context) => MyLogin()));
-            },
-          ),
-          Divider(
-            height: 0.1,
-            color: Colors.black26,
-          ),
-
-          ListTile(
-            leading: const Icon(
-              Icons.list,
-              size: 30.0,
-            ),
-            title: Text(
-                "View Records",
-                style : TextStyle(fontSize: 16)
-
+              "View Records",
+              style: textStyle2,
             ),
             onTap: () {
               Navigator.push(
                   context,
 
-                  MaterialPageRoute(builder: (context) => const SupervisorRecords()));
+                  ///Add Karo Idhar
+                  MaterialPageRoute(builder: (context) => const HODRecords()));
             },
           ),
-          Divider(
-            height: 0.1,
-            color: Colors.black26,
-          ),
-
           ListTile(
             leading: const Icon(
               Icons.logout_rounded,
-              size: 30.0,
+              size: 38.0,
             ),
             title: Text(
-                "Log Out",
-                style : TextStyle(fontSize: 16)
-
+              "Log Out",
+              style: textStyle2,
             ),
             onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => MyLogin()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage()));
             },
-          ),
-          Divider(
-            height: 0.1,
-            color: Colors.black26,
-          ),
+
+          )
         ],
       ),
     );
