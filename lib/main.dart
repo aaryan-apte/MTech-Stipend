@@ -5,6 +5,7 @@ import 'package:mtech_stipend/pages/student/studentHome.dart';
 import 'package:mtech_stipend/pages/student/student_form.dart';
 import 'package:mtech_stipend/pages/supervisor/attendance.dart';
 import 'package:mtech_stipend/pages/supervisor/supervisor_page.dart';
+import 'package:mtech_stipend/splash_screen.dart';
 // import 'package:mtech_stipend/pages/hod/hod_page.dart';
 // import 'package:mtech_stipend/pages/supervisor/supervisor_page.dart';
 // import 'package:mtech_stipend/pages/hod/hod/hod_page.dart';
@@ -21,7 +22,7 @@ class StipendApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const StudentList(),
+      home: SupervisorPage(),
       // home: StudentForm(),
       theme: Theme.of(context).copyWith(dividerColor: Colors.transparent),
     );
