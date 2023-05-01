@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:mtech_stipend/loginRegister/login.dart';
 import 'package:mtech_stipend/pages/student/student_form.dart';
 import 'package:mtech_stipend/pages/supervisor/supervisor_records.dart';
@@ -25,9 +26,7 @@ class StipendApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
+      localizationsDelegates: const [
         MonthYearPickerLocalizations.delegate,
       ],
       // GlobalMaterialLocalizations.delegate,
